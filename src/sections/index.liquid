@@ -1,0 +1,44 @@
+{% schema %}
+    {
+        "name": "Index",
+        "class": "Index",
+        "tag": "section",
+        "blocks": [
+            {
+                "type": "product",
+                "name": "Product",
+                "settings": [
+                    {
+                        "id": "product",
+                        "type": "product",
+                        "label": "Product"
+                    }
+                ]
+            },
+            {
+                "type": "feature",
+                "name": "Feature",
+                "settings": [
+                    {
+                        "id": "product",
+                        "type": "product",
+                        "label": "Product"
+                    }
+                ]
+            }
+        ]
+    }
+{% endschema %}
+
+{% for block in section.blocks %}
+
+    {% if block.type == "product" %}
+        {%- assign product = all_products[block.settings.product] -%}
+        {% include 'index-product' %}
+    {% endif %}
+
+    {% if block.type == "feature" %}
+        {% include 'index-feature' %}
+    {% endif %}
+
+{% endfor %}

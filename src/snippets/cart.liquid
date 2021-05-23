@@ -1,0 +1,84 @@
+{% comment %}
+Cart
+---
+Cart component used in the mini cart and cart template.
+Parts of this component are dynamically rendered using Vue 
+and the global Vuex store.
+{% endcomment %}
+
+<form class="Cart-form" action="/cart" method="post">
+    <div class="Cart-container">
+
+        {% comment %} Header {% endcomment %}
+
+        <header class="Cart-header">
+            <h2 class="Cart-title">Your Cart</h1>
+            <button class="Cart-toggle Cart-toggle--close" @click.prevent="toggleDrawerCart">
+                {% include 'icon-close' %}
+            </button>
+        </header>
+
+        <hr>
+
+        {% comment %} Cart Items {% endcomment %}
+
+        <div class="Cart-items">
+            <template v-for="(item, index) in $store.state.cart.cartItems">
+                <cart-item inline-template :item="item" :index="index" :key="item.id">
+                    <article class="Cart-item" :class="{'is-pendingAction' : isPendingAction }">
+                        <a class="Cart-itemImage" :href="item.url">
+                            <img :src="resizeShopifyImageUrl(item.image, '200x200')" />
+                        </a>
+                        <div class="Cart-itemDetail">
+                            <header class="Cart-itemHeader">
+                                <h3 class="Cart-itemTitle">
+                                    <a :href="item.url">${ item.product_title }</a>
+                                </h3>
+                            </header>
+                            <p class="Cart-itemOption" v-for="(option, index) in item.options_with_values" :key="index">
+                                ${ option.name }: ${ option.value }
+                            </p>
+                            <div class="Quantity">
+                                <button class="Quantity-button Quantity-button--minus"
+                                    @click.prevent="changeQuantity(quantity - 1)">-</button>
+                                <input type="number" min="1" class="Quantity-input" name="quantity"
+                                    v-model.number="quantity" @change="quantity = Math.max(Math.round(quantity), 1)" />
+                                <button class="Quantity-button Quantity-button--plus"
+                                    @click.prevent="changeQuantity(quantity + 1)">+</button>
+                            </div>
+                        </div>
+                        <div class="Cart-itemSummary">
+                            <button @click.prevent="removeCartItem(index+1)" class="Cart-button Cart-button--close">{% include 'icon-close' %}</button>
+                            <span>${ formatMoney(item.price * item.quantity) }</span>
+                        </div>
+                        <div class="Cart-itemFeedback">
+                            ${ feedbackMessage }
+                        </div>
+                    </article>
+                </cart-item>
+            </template>
+        </div>
+
+        {% comment %} Footer {% endcomment %}
+
+        <hr>
+
+        <div class="Cart-calculations">
+            <div class="Cart-calculation">
+                <p>Total</p>
+                <p>${ formatMoney(cartSubtotal) }</p>
+            </div>
+        </div>
+        <div class="Cart-footer">
+            <button type="submit" class="Button Button--checkout" id="checkout" name="checkout" value="Checkout">
+                Checkout
+            </button>
+            {% if template == 'cart' %}
+                <a href="/collections/all" class="Button Button--keepShopping">Keep Shopping</a>
+            {% else %}
+                <button class="Button Button--keepShopping" @click.prevent="toggleDrawerCart">Keep Shopping</button>
+            {% endif %}
+        </div>
+
+    </div>
+</form>

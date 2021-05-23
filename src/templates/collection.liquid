@@ -1,0 +1,6 @@
+{% comment %} Index {% endcomment %}
+<section>
+    {% for product in collection.products %}
+        {% include 'index-product' %}
+    {% endfor %}
+</section>

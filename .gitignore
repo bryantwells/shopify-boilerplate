@@ -1,0 +1,5 @@
+node_modules
+src/config/settings_data.json
+src/config.yml
+dist
+package-lock.json

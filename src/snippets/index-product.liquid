@@ -1,0 +1,44 @@
+{%- assign first_variant = product.selected_or_first_available_variant -%}
+
+<div class="Index-product">
+    <a class="Index-productLink" href="{{ product.url }}">
+        <ul class="Index-productTagList">
+            {% for tag in product.tags %}
+                {% if tag contains 'alert:' %}
+                    <li class="Index-productTag">{{ tag | remove: 'alert:' }}</li>
+                {% endif %}
+            {% endfor %}
+        </ul>
+        <figure class="Index-productFigure">
+
+            {% comment %} Product Image {% endcomment %}
+            <img class="Index-productImage" alt="{{ product.title }}"
+                srcset="
+                    {{ product.featured_image | img_url: '213x375', crop: 'center' }} 213w,
+                    {{ product.featured_image | img_url: '425x750', crop: 'center' }} 425w,
+                    {{ product.featured_image | img_url: '850x1500', crop: 'center' }} 850w"
+                sizes="(max-width: 1050px) 50vw, 25vw"
+                src="{{ product.featured_image | img_url: '850x1500', crop: 'center' }}">
+
+            {% comment %} Product Meta {% endcomment %}
+            <figcaption class="Index-productText">                
+                <span class="Index-productMeta Index-productMeta--title">
+                    {{ product.title }}
+                </span>
+                <span class="Index-productMeta Index-productMeta--price">
+                    {% if first_variant.compare_at_price %}
+                        <span class="Index-productPrice u-strikeThrough">
+                            {{ first_variant.compare_at_price | money_without_trailing_zeros }}
+                        </span>
+                    {% endif %}
+                    <span class="Index-productPrice">
+                        {{ first_variant.price | money_without_trailing_zeros }}
+                    </span>
+                </span>
+                
+            </figcaption>
+
+        </figure>
+        
+    </a>
+</div>

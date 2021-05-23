@@ -1,0 +1,49 @@
+{
+    "name": "shopify-theme",
+    "version": "1.0.0",
+    "scripts": {
+        "dev": "npm-run-all -p watch:*",
+        "build": "npm-run-all -p build:*",
+        "watch:static": "cpx 'src/assets/static/**/*.!(js|scss)' dist/assets -w",
+        "watch:template": "npm run build:template -- -w",
+        "watch:scss": "chokidar 'src/assets/scss/**/*.scss' -c 'npm run build:scss'",
+        "watch:js": "watchify -t vueify -e src/assets/js/main.js -o dist/assets/main.js -t [ babelify --presets [@babel/preset-env] ] -v",
+        "build:static": "cpx 'src/assets/static/**/*.!(js|scss)' dist/assets",
+        "build:template": "cpx 'src/!(assets)/**/*' dist",
+        "build:scss": "npm-run-all -s scss:compile scss:prefix",
+        "build:js": "browserify -t vueify -e src/assets/js/main.js -o dist/assets/main.js -t [ babelify --presets [@babel/preset-env] ]",
+        "scss:compile": "node-sass src/assets/scss/main.scss -o dist/assets",
+        "scss:prefix": "postcss dist/assets/main.css --use autoprefixer -d dist/assets"
+    },
+    "devDependencies": {
+        "@babel/cli": "^7.14.3",
+        "@babel/core": "^7.14.3",
+        "@babel/preset-env": "^7.14.2",
+        "autoprefixer": "^10.2.5",
+        "babelify": "^10.0.0",
+        "browserify": "^17.0.0",
+        "chokidar-cli": "^2.1.0",
+        "cpx": "^1.5.0",
+        "node-sass": "^6.0.0",
+        "npm-run-all": "^4.1.5",
+        "postcss": "^8.3.0",
+        "postcss-cli": "^8.3.1",
+        "vueify": "^9.4.1",
+        "watchify": "^4.0.0"
+    },
+    "babel": {
+        "presets": [
+            "@babel/preset-env"
+        ]
+    },
+    "dependencies": {
+        "@shopify/theme-currency": "^4.1.1",
+        "async": "^3.2.0",
+        "axios": "^0.21.1",
+        "vue": "^2.6.12",
+        "vuex": "^3.6.2"
+    },
+    "browser": {
+        "vue": "vue/dist/vue.common.js"
+    }
+}

@@ -1,0 +1,6 @@
+development:
+  password: XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+  theme_id: "51164282965"
+  store: toccin.myshopify.com
+  ignore_files:
+  - config/settings_data.json

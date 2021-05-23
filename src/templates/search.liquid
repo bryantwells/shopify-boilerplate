@@ -1,0 +1,24 @@
+{% if search.performed %}
+    {% if search.results.size > 0 %}
+
+        <section class="Index">
+            {% for item in search.results %}
+
+                {% comment %} Product {% endcomment %}
+                {% if item.object_type == 'product' %}
+                    {%- assign product = item -%}
+                    {% include 'index-product' %}
+                {% endif %}
+
+            {% endfor %}
+        </section>
+
+    {% else %}
+    
+        <div>
+            <center>Sorry, no results were found for "{{ search.terms }}".</center>
+        </div>
+    
+    {% endif %}
+{% endif %}
+

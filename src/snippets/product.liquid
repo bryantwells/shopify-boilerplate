@@ -1,0 +1,153 @@
+{% comment %}
+Product 
+---
+This element uses Vue templating for adding items to and comminicating
+with the cart via shopify's API.
+https://vuejs.org/v2/guide/components-edge-cases.html#Inline-Templates
+{% endcomment %}
+
+{%- assign first_variant = product.selected_or_first_available_variant -%}
+
+<section class="Product u-vue">
+    <product inline-template>
+        <div class="Product-container">
+
+            {% comment %} Featured Product Image {% endcomment %}
+            <div class="Product-block Product-block--image">
+
+                <img class="Product-image" alt="{{ product.featured_image.alt }}"
+                    srcset="
+                        {{ product.featured_image | img_url: '213x375', crop: 'center' }} 213w,
+                        {{ product.featured_image | img_url: '425x750', crop: 'center' }} 425w,
+                        {{ product.featured_image | img_url: '850x1500', crop: 'center' }} 850w"
+                    sizes="(max-width: 700px) 100vw, 50vw"
+                    src="{{ product.featured_image | img_url: '850x1500', crop: 'center' }}">
+
+                <div class="Product-zoom" data-src="{{ product.featured_image | img_url: '1700x3000', crop: 'center' }}" aria-hidden="true">
+                    <img class="Product-image Product-image--zoom" alt="{{ product.featured_image.alt }} Detail">
+                </div>
+
+            </div>
+
+            {% comment %} Product Info {% endcomment %}
+            <div class="Product-block Product-block--info">
+
+                {% comment %} Header {% endcomment %}
+                <header class="Product-header">
+
+                    <h1 class="Product-title">
+                        {{ product.title }}
+                    </h1>
+
+                    {% if first_variant.compare_at_price %}
+                        <del class="Product-price">
+                            {{ first_variant.compare_at_price | money_without_trailing_zeros }}
+                        </del>
+                    {% endif %}
+                    <span class="Product-price">
+                        {{ first_variant.price | money_without_trailing_zeros }}
+                    </span>
+
+                </header>
+
+                {% comment %} Active Color Option {% endcomment %}
+                <span class="Product-options">
+                    {{ product.options_with_values[0].values[0] }}
+                </span>
+
+                {% comment %} Product Variant Selection {% endcomment %}
+                <div role="radiogroup" aria-labelledby="Product-variantSelectLegend" class="Product-variantSelect" name="variant" tabindex="0">
+
+                    <h3 id="Product-variantSelectLegend" class="Product-variantSelectLegend">Choose a size:</h3>
+
+                    {% for variant in product.variants %}
+                        {% if variant.available %}
+                            {% if variant.option1 == product.options_with_values[0].values[0] %}
+
+                                <div class="Product-variant">
+
+                                    {% comment %}
+                                        Available Variant
+                                        ---
+                                        The value from this selection is bound to
+                                        the containing Vue instance via v-model
+                                        attribute.
+                                        https://vuejs.org/v2/guide/forms.html
+                                    {% endcomment %}
+                                    <input class="Product-variantInput" type="radio" name="variant" id="{{ variant.id }}"
+                                        :value="{ id:{{ variant.id }}, isAvailable: true }" v-model="activeVariant" tabindex="0">
+                                    <label class="Product-variantLabel" for="{{ variant.id }}">
+                                        {{ variant.option2 }}
+                                    </label>
+                                </div>
+
+                            {% endif %}
+                        {% else %}
+                            {% if variant.option1 == product.options_with_values[0].values[0] %}
+
+                                {% comment %}
+                                    Unavailable Variant
+                                    ---
+                                    The value from this selection is bound to
+                                    the containing Vue instance via v-model
+                                    attribute.
+                                    https://vuejs.org/v2/guide/forms.html
+                                {% endcomment %}
+                                <div class="Product-variant Product-variant--disabled">
+                                    <input class="Product-variantInput Product-variantInput--unavailable" type="radio"
+                                        name="variant" id="{{ variant.id }}" :value="{ id:{{ variant.id }}, isAvailable: false }"
+                                        v-model="activeVariant">
+                                    <label class="Product-variantLabel Product-variantLabel--unavailable" for="{{ variant.id }}">
+                                        {{ variant.option2 }} <span class="Product-stockAlert">(out of stock)</span>
+                                    </label>
+                                </div>
+
+                            {% endif %}
+                        {% endif %}
+                    {% endfor %}
+                </div>
+
+                <hr>
+                
+                <div class="Product-description">
+                    {{ product.description }}
+                </div>
+
+                {% comment %} Add To Cart Button {% endcomment %}
+                <div class="Product-buttonContainer">
+
+                    {% comment %}
+                        Element with Vue attribute bindings and events.
+                        https://vuejs.org/v2/guide/class-and-style.html
+                        https://vuejs.org/v2/guide/events.html
+                    {% endcomment %}
+                    <button class="Button Button--addToCart" :class="{ 
+                            'is-disabled': !activeVariant.id,
+                            'u-hide': activeVariant.id && !activeVariant.isAvailable
+                        }" @click="addCartItem()" type="Submit" for="Product-variantSelect"
+                        :aria-hidden="!activeVariant.id" :disabled="!activeVariant.id">
+                        Add to cart
+                    </button>
+                </div>
+
+            </div>
+
+            {% comment %} Remaining Product Images {% endcomment %}
+            {% for image in product.images %}
+                {% if forloop.index > 1 %}
+                    <div class="Product-block Product-block--image">
+                        <img class="Product-image" alt="{{ image.alt }}"
+                            srcset="
+                                {{ image | img_url: '213x375', crop: 'center' }} 213w,
+                                {{ image | img_url: '425x750', crop: 'center' }} 425w,
+                                {{ image | img_url: '850x1500', crop: 'center' }} 850w"
+                            sizes="100vw"
+                            src="{{ image | img_url: '850x1500', crop: 'center' }}">
+                    </div>
+                {% endif %}
+            {% endfor %}
+
+        </div>
+    </product>
+</section>
+

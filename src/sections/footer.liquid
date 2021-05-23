@@ -1,0 +1,24 @@
+{% schema %}
+{
+    "name": "Footer",
+    "class": "Footer",
+    "tag": "footer",
+    "settings": [
+        {
+            "id": "cta_header",
+            "type": "textarea",
+            "label": "Call To Action Header"
+        },
+        {
+            "id": "cta_body",
+            "type": "textarea",
+            "label": "Call To Action Body"
+        }
+    ]
+}
+{% endschema %}
+
+{%- assign cta_header = section.settings.cta_header -%}
+{%- assign cta_body = section.settings.cta_body -%}
+
+{% include 'footer' %}

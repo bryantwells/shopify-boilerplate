@@ -1,0 +1,71 @@
+{% schema %}
+    {
+        "name": "Hero Images",
+        "class": "Hero",
+        "tag": "section",
+        "blocks": [
+            {
+                "name": "Image",
+                "type": "image",
+                "settings": [
+                    {
+                        "id": "image",
+                        "type": "image_picker",
+                        "label": "Image"
+                    },
+                    {
+                        "id": "text",
+                        "type": "textarea",
+                        "label": "Text"
+                    },
+                    {
+                        "id": "color",
+                        "type": "color",
+                        "label": "Text Color"
+                    }
+                ]
+            },
+            {
+                "name": "Video",
+                "type": "video",
+                "settings": [
+                    {
+                        "id": "video_url",
+                        "type": "url",
+                        "label": "Video Url"
+                    },
+                    {
+                        "id": "image",
+                        "type": "image_picker",
+                        "label": "Image Alternate"
+                    },
+                    {
+                        "id": "text",
+                        "type": "textarea",
+                        "label": "Text"
+                    },
+                    {
+                        "id": "color",
+                        "type": "color",
+                        "label": "Text Color"
+                    }
+                ]
+            }
+        ]
+    }
+{% endschema %}
+
+{% for block in section.blocks %}
+
+    {%- assign slide = block.settings -%}
+    
+    {% if block.type == 'image' %}
+        {% include 'hero-slide-image' %}
+    {% else if block.type == 'video' %}
+        {% include 'hero-slide-video' %}
+    {% endif %}
+
+{% endfor %}
+
+{%- assign nav_size = section.blocks|size -%}
+{% include 'hero-nav' %}
